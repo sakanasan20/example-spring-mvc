@@ -13,7 +13,7 @@ public class Beer {
 
 	private UUID id;
 	
-	private Integer verison;
+	private Integer version;
 	
 	private String beerName;
 	
