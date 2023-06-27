@@ -34,7 +34,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import tw.niq.example.model.Beer;
+import tw.niq.example.model.BeerDto;
 import tw.niq.example.service.BeerService;
 import tw.niq.example.service.BeerServiceImpl;
 
@@ -56,7 +56,7 @@ class BeerControllerTest {
 	ArgumentCaptor<UUID> uuidArgumentCaptor;
 	
 	@Captor
-	ArgumentCaptor<Beer> beerArgumentCaptor;
+	ArgumentCaptor<BeerDto> beerArgumentCaptor;
 
 	@BeforeEach
 	void setUp() throws Exception {
@@ -65,7 +65,7 @@ class BeerControllerTest {
 	@Test
 	void testListBeers() throws Exception {
 		
-		Collection<Beer> testBeers = beerServiceimpl.listBeers();
+		Collection<BeerDto> testBeers = beerServiceimpl.listBeers();
 		
 		given(beerService.listBeers()).willReturn(testBeers);
 		
@@ -78,7 +78,7 @@ class BeerControllerTest {
 	@Test
 	void testGetBeerById() throws Exception {
 		
-		Beer testBeer = beerServiceimpl.listBeers().stream().findFirst().get();
+		BeerDto testBeer = beerServiceimpl.listBeers().stream().findFirst().get();
 		
 		given(beerService.getBeerById(any(UUID.class))).willReturn(Optional.of(testBeer));
 		
@@ -101,9 +101,9 @@ class BeerControllerTest {
 	@Test
 	void testCreateBeer() throws Exception {
 	
-		Beer testBeerCreated = beerServiceimpl.listBeers().stream().findFirst().get();
+		BeerDto testBeerCreated = beerServiceimpl.listBeers().stream().findFirst().get();
 		
-		Beer testBeerToCreate = Beer.builder()
+		BeerDto testBeerToCreate = BeerDto.builder()
 				.beerName(testBeerCreated.getBeerName())
 				.beerStyle(testBeerCreated.getBeerStyle())
 				.price(testBeerCreated.getPrice())
@@ -113,7 +113,7 @@ class BeerControllerTest {
 
 		String testBeerToCreateJson = objectMapper.writeValueAsString(testBeerToCreate);
 		
-		given(beerService.createBeer(any(Beer.class))).willReturn(testBeerCreated);
+		given(beerService.createBeer(any(BeerDto.class))).willReturn(testBeerCreated);
 
 		mockMvc.perform(post(BeerController.BEER_PATH)
 				.accept(MediaType.APPLICATION_JSON)
@@ -126,7 +126,7 @@ class BeerControllerTest {
 	@Test
 	void testUpdateBeerById() throws Exception {
 	
-		Beer testBeer = beerServiceimpl.listBeers().stream().findFirst().get();
+		BeerDto testBeer = beerServiceimpl.listBeers().stream().findFirst().get();
 		
 		String testBeerJson = objectMapper.writeValueAsString(testBeer);
 
@@ -136,13 +136,13 @@ class BeerControllerTest {
 				.content(testBeerJson))
 			.andExpect(status().isNoContent());
 		
-		verify(beerService).updateBeerById(any(UUID.class), any(Beer.class));
+		verify(beerService).updateBeerById(any(UUID.class), any(BeerDto.class));
 	}
 	
 	@Test
 	void testPatchBeerById() throws Exception {
 	
-		Beer testBeer = beerServiceimpl.listBeers().stream().findFirst().get();
+		BeerDto testBeer = beerServiceimpl.listBeers().stream().findFirst().get();
 		
 		Map<String, Object> testBeerToPatch = new HashMap<>();
 		
@@ -166,7 +166,7 @@ class BeerControllerTest {
 	@Test
 	void testDeleteBeerById() throws Exception {
 		
-		Beer testBeer = beerServiceimpl.listBeers().stream().findFirst().get();
+		BeerDto testBeer = beerServiceimpl.listBeers().stream().findFirst().get();
 		
 		mockMvc.perform(delete(BeerController.BEER_PATH_ID, testBeer.getId()).accept(MediaType.APPLICATION_JSON))
 			.andExpect(status().isNoContent());

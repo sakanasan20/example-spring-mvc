@@ -7,13 +7,17 @@ import java.util.UUID;
 import lombok.Builder;
 import lombok.Data;
 
-@Builder
 @Data
-public class Beer {
+@Builder
+public class BeerDto {
 
 	private UUID id;
 	
 	private Integer version;
+	
+	private LocalDateTime createdDate;
+	
+	private LocalDateTime updateDate;
 	
 	private String beerName;
 	
@@ -24,9 +28,5 @@ public class Beer {
 	private Integer quantityOnHand;
 	
 	private BigDecimal price;
-	
-	private LocalDateTime createdDate;
-	
-	private LocalDateTime updateDate;
-	
+
 }

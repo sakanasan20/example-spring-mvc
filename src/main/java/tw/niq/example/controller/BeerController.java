@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import tw.niq.example.exception.NotFoundException;
-import tw.niq.example.model.Beer;
+import tw.niq.example.model.BeerDto;
 import tw.niq.example.service.BeerService;
 
 @Slf4j
@@ -33,9 +33,9 @@ public class BeerController {
 	private final BeerService beerService;
 
 	@GetMapping(BEER_PATH)
-	public Collection<Beer> listBeers() {
+	public Collection<BeerDto> listBeers() {
 		
-		Collection<Beer> beers = beerService.listBeers();
+		Collection<BeerDto> beers = beerService.listBeers();
 		
 		log.debug(beers.toString());
 		
@@ -43,9 +43,9 @@ public class BeerController {
 	}
 	
 	@GetMapping(BEER_PATH_ID)
-	public Beer getBeerById(@PathVariable("beerId") UUID beerId) {
+	public BeerDto getBeerById(@PathVariable("beerId") UUID beerId) {
 		
-		Beer beer = beerService.getBeerById(beerId).orElseThrow(NotFoundException::new);
+		BeerDto beer = beerService.getBeerById(beerId).orElseThrow(NotFoundException::new);
 		
 		log.debug(beer.toString());
 		
@@ -53,9 +53,9 @@ public class BeerController {
 	}
 	
 	@PostMapping(BEER_PATH)
-	public ResponseEntity<Void> createBeer(@RequestBody Beer beer) {
+	public ResponseEntity<Void> createBeer(@RequestBody BeerDto beer) {
 		
-		Beer beerCreated = beerService.createBeer(beer);
+		BeerDto beerCreated = beerService.createBeer(beer);
 		
 		HttpHeaders httpHeaders = new HttpHeaders();
 		
@@ -65,7 +65,7 @@ public class BeerController {
 	}
 	
 	@PutMapping(BEER_PATH_ID)
-	public ResponseEntity<Void> updateBeerById(@PathVariable("beerId") UUID beerId, @RequestBody Beer beer) {
+	public ResponseEntity<Void> updateBeerById(@PathVariable("beerId") UUID beerId, @RequestBody BeerDto beer) {
 		
 		beerService.updateBeerById(beerId, beer);
 		
@@ -73,7 +73,7 @@ public class BeerController {
 	}
 	
 	@PatchMapping(BEER_PATH_ID)
-	public ResponseEntity<Void> patchBeerById(@PathVariable("beerId") UUID beerId, @RequestBody Beer beer) {
+	public ResponseEntity<Void> patchBeerById(@PathVariable("beerId") UUID beerId, @RequestBody BeerDto beer) {
 		
 		beerService.patchBeerById(beerId, beer);
 		

@@ -4,19 +4,19 @@ import java.util.Collection;
 import java.util.Optional;
 import java.util.UUID;
 
-import tw.niq.example.model.Beer;
+import tw.niq.example.model.BeerDto;
 
 public interface BeerService {
 	
-	Collection<Beer> listBeers();
+	Collection<BeerDto> listBeers();
 
-	Optional<Beer> getBeerById(UUID beerId);
+	Optional<BeerDto> getBeerById(UUID beerId);
 
-	Beer createBeer(Beer beer);
+	BeerDto createBeer(BeerDto beer);
 
-	void updateBeerById(UUID beerId, Beer beer);
+	void updateBeerById(UUID beerId, BeerDto beer);
 	
-	void patchBeerById(UUID beerId, Beer beer);
+	void patchBeerById(UUID beerId, BeerDto beer);
 
 	void deleteBeerById(UUID beerId);
 	
