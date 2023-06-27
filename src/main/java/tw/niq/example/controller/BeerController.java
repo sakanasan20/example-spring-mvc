@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import lombok.AllArgsConstructor;
@@ -24,12 +23,15 @@ import tw.niq.example.service.BeerService;
 @Slf4j
 @AllArgsConstructor
 @RestController
-@RequestMapping("/api/v1/beers")
 public class BeerController {
+	
+	public static final String BEER_PATH = "/api/v1/beers";
+	
+	public static final String BEER_PATH_ID = BEER_PATH + "/{beerId}";
 
 	private final BeerService beerService;
 	
-	@GetMapping
+	@GetMapping(BEER_PATH)
 	public Collection<Beer> listBeers() {
 		
 		Collection<Beer> beers = beerService.listBeers();
@@ -39,7 +41,7 @@ public class BeerController {
 		return beers;
 	}
 	
-	@GetMapping("{beerId}")
+	@GetMapping(BEER_PATH_ID)
 	public Beer getBeerById(@PathVariable("beerId") UUID beerId) {
 		
 		Beer beer = beerService.getBeerById(beerId);
@@ -49,7 +51,7 @@ public class BeerController {
 		return beer;
 	}
 	
-	@PostMapping
+	@PostMapping(BEER_PATH)
 	public ResponseEntity<Void> createBeer(@RequestBody Beer beer) {
 		
 		Beer beerCreated = beerService.createBeer(beer);
@@ -61,7 +63,7 @@ public class BeerController {
 		return new ResponseEntity<Void>(httpHeaders, HttpStatus.CREATED);
 	}
 	
-	@PutMapping("{beerId}")
+	@PutMapping(BEER_PATH_ID)
 	public ResponseEntity<Void> updateBeerById(@PathVariable("beerId") UUID beerId, @RequestBody Beer beer) {
 		
 		beerService.updateBeerById(beerId, beer);
@@ -69,7 +71,7 @@ public class BeerController {
 		return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
 	}
 	
-	@PatchMapping("{beerId}")
+	@PatchMapping(BEER_PATH_ID)
 	public ResponseEntity<Void> patchBeerById(@PathVariable("beerId") UUID beerId, @RequestBody Beer beer) {
 		
 		beerService.patchBeerById(beerId, beer);
@@ -77,7 +79,7 @@ public class BeerController {
 		return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
 	}
 	
-	@DeleteMapping("{beerId}")
+	@DeleteMapping(BEER_PATH_ID)
 	public ResponseEntity<Void> deleteBeerById(@PathVariable("beerId") UUID beerId) {
 		
 		beerService.deleteBeerById(beerId);
