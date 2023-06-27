@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import tw.niq.example.exception.NotFoundException;
 import tw.niq.example.model.Beer;
 import tw.niq.example.service.BeerService;
 
@@ -30,7 +31,7 @@ public class BeerController {
 	public static final String BEER_PATH_ID = BEER_PATH + "/{beerId}";
 
 	private final BeerService beerService;
-	
+
 	@GetMapping(BEER_PATH)
 	public Collection<Beer> listBeers() {
 		
@@ -44,7 +45,7 @@ public class BeerController {
 	@GetMapping(BEER_PATH_ID)
 	public Beer getBeerById(@PathVariable("beerId") UUID beerId) {
 		
-		Beer beer = beerService.getBeerById(beerId);
+		Beer beer = beerService.getBeerById(beerId).orElseThrow(NotFoundException::new);
 		
 		log.debug(beer.toString());
 		

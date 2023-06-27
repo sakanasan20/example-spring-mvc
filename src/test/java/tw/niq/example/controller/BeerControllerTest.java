@@ -18,6 +18,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -79,13 +80,22 @@ class BeerControllerTest {
 		
 		Beer testBeer = beerServiceimpl.listBeers().stream().findFirst().get();
 		
-		given(beerService.getBeerById(any(UUID.class))).willReturn(testBeer);
+		given(beerService.getBeerById(any(UUID.class))).willReturn(Optional.of(testBeer));
 		
-		mockMvc.perform(get(BeerController.BEER_PATH_ID, UUID.randomUUID()).accept(MediaType.APPLICATION_JSON))
+		mockMvc.perform(get(BeerController.BEER_PATH_ID, testBeer.getId()).accept(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk())
 			.andExpect(content().contentType(MediaType.APPLICATION_JSON))
 			.andExpect(jsonPath("$.id", is(testBeer.getId().toString())))
 			.andExpect(jsonPath("$.beerName", is(testBeer.getBeerName())));
+	}
+	
+	@Test
+	void testGetBeerById_WhenBeerIdNotFound() throws Exception {
+		
+		given(beerService.getBeerById(any(UUID.class))).willReturn(Optional.empty());
+		
+		mockMvc.perform(get(BeerController.BEER_PATH_ID, UUID.randomUUID()))
+			.andExpect(status().isNotFound());
 	}
 	
 	@Test
