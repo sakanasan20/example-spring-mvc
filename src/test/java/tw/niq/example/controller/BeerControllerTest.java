@@ -18,6 +18,11 @@ class BeerControllerTest {
 	}
 
 	@Test
+	void listBeers() {
+		beerController.listBeers();
+	}
+	
+	@Test
 	void testGetBeerById() {
 		beerController.getBeerById(UUID.randomUUID());
 	}
