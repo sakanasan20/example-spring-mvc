@@ -28,7 +28,7 @@ public class Customer {
 	
 	@Id
 	@GeneratedValue(generator = "UUID")
-	@GenericGenerator(name = "UUID", type = org.hibernate.id.uuid.UuidGenerator.class)
+	@GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
 	@Column(length = 36, columnDefinition = "varchar", updatable = false, nullable = false)
 	private UUID id;
 	
