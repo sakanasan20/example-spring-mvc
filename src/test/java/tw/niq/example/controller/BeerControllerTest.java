@@ -36,7 +36,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import tw.niq.example.model.BeerDto;
 import tw.niq.example.service.BeerService;
-import tw.niq.example.service.BeerServiceImpl;
+import tw.niq.example.service.BeerServiceMap;
 
 @WebMvcTest(BeerController.class)
 class BeerControllerTest {
@@ -50,7 +50,7 @@ class BeerControllerTest {
 	@MockBean
 	BeerService beerService;
 	
-	BeerServiceImpl beerServiceimpl = new BeerServiceImpl();
+	BeerServiceMap beerServiceimpl = new BeerServiceMap();
 	
 	@Captor
 	ArgumentCaptor<UUID> uuidArgumentCaptor;

@@ -14,11 +14,11 @@ import org.springframework.util.StringUtils;
 import tw.niq.example.model.CustomerDto;
 
 @Service
-public class CustomerServiceImpl implements CustomerService {
+public class CustomerServiceMap implements CustomerService {
 	
 	private Map<UUID, CustomerDto> customerMap;
 
-	public CustomerServiceImpl() {
+	public CustomerServiceMap() {
 
 		CustomerDto customer1 = CustomerDto.builder()
                 .id(UUID.randomUUID())

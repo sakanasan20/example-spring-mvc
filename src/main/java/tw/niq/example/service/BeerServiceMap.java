@@ -16,17 +16,18 @@ import tw.niq.example.model.BeerDto;
 import tw.niq.example.model.BeerStyle;
 
 @Service
-public class BeerServiceImpl implements BeerService {
+public class BeerServiceMap implements BeerService {
 	
 	private Map<UUID, BeerDto> beerMap;
 	
-	public BeerServiceImpl() {
+	public BeerServiceMap() {
 
 		this.beerMap = new HashMap<>();
 
 		BeerDto beer1 = BeerDto.builder()
 				.id(UUID.randomUUID())
-				.version(1).beerName("Galaxy Cat")
+				.version(1)
+				.beerName("Galaxy Cat")
 				.beerStyle(BeerStyle.PALE_ALE)
 				.upc("12356")
 				.price(new BigDecimal("12.99"))
