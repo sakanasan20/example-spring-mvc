@@ -100,7 +100,7 @@
 							<version>0.2.0</version>
 						</Path>
 					</annotationProcessorPaths>
-					<compilerArgs>-Amapstruct.defaultCompnentModel=spring</compilerArgs>
+					<compilerArgs>-Amapstruct.defaultComponentModel=spring</compilerArgs>
 				</configuration>
 			</plugin>
 		</plugins>

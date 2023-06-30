@@ -3,9 +3,12 @@ package tw.niq.example.service;
 import java.util.Collection;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.Collectors;
 
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import lombok.RequiredArgsConstructor;
 import tw.niq.example.mapper.BeerMapper;
@@ -22,38 +25,96 @@ public class BeerServiceJpa implements BeerService {
 	
 	@Override
 	public Collection<BeerDto> listBeers() {
-		// TODO Auto-generated method stub
-		return null;
+		return beerRepository.findAll()
+				.stream()
+				.map(beerMapper::beerToBeerDto)
+				.collect(Collectors.toList());
 	}
 
 	@Override
 	public Optional<BeerDto> getBeerById(UUID beerId) {
-		// TODO Auto-generated method stub
-		return Optional.empty();
+		return Optional.ofNullable(
+				beerMapper.beerToBeerDto(
+						beerRepository.findById(beerId).orElse(null)));
 	}
 
 	@Override
-	public BeerDto createBeer(BeerDto beer) {
-		// TODO Auto-generated method stub
-		return null;
+	public BeerDto createBeer(BeerDto beerDto) {
+
+		return beerMapper.beerToBeerDto(
+				beerRepository.save(
+						beerMapper.beerDtoToBeer(beerDto)));
 	}
 
 	@Override
-	public void updateBeerById(UUID beerId, BeerDto beer) {
-		// TODO Auto-generated method stub
-
+	public Optional<BeerDto> updateBeerById(UUID beerId, BeerDto beerDto) {
+		
+		AtomicReference<Optional<BeerDto>> atomicReference = new AtomicReference<>();
+		
+		beerRepository.findById(beerId).ifPresentOrElse(foundBeer -> {
+			
+			foundBeer.setBeerName(beerDto.getBeerName());
+			foundBeer.setBeerStyle(beerDto.getBeerStyle());
+			foundBeer.setPrice(beerDto.getPrice());
+			foundBeer.setQuantityOnHand(beerDto.getQuantityOnHand());
+			foundBeer.setUpc(beerDto.getUpc());
+			
+			atomicReference.set(
+					Optional.of(
+							beerMapper.beerToBeerDto(
+									beerRepository.save(foundBeer))));
+			
+		}, () -> {
+			
+			atomicReference.set(Optional.empty());
+		});
+		
+		return atomicReference.get();
 	}
 
 	@Override
-	public void patchBeerById(UUID beerId, BeerDto beer) {
-		// TODO Auto-generated method stub
+	public Optional<BeerDto> patchBeerById(UUID beerId, BeerDto beer) {
 
+		AtomicReference<Optional<BeerDto>> atomicReference = new AtomicReference<>();
+		
+		beerRepository.findById(beerId).ifPresentOrElse(foundBeer -> {
+			
+			if (StringUtils.hasText(beer.getBeerName())) {
+				foundBeer.setBeerName(beer.getBeerName());
+			}
+			
+			if (beer.getBeerStyle() != null) {
+				foundBeer.setBeerStyle(beer.getBeerStyle());
+			}
+			
+			if (StringUtils.hasText(beer.getUpc()))	{
+				foundBeer.setUpc(beer.getUpc());
+			}
+			
+			if (beer.getPrice()!= null)	{
+				foundBeer.setPrice(beer.getPrice());
+			}
+			
+			if (beer.getQuantityOnHand()!= null) {
+				foundBeer.setQuantityOnHand(beer.getQuantityOnHand());
+			}
+			
+		}, () -> {
+			atomicReference.set(Optional.empty());
+		});
+		
+		return atomicReference.get();
 	}
 
 	@Override
-	public void deleteBeerById(UUID beerId) {
-		// TODO Auto-generated method stub
-
+	public Boolean deleteBeerById(UUID beerId) {
+		
+		if (beerRepository.existsById(beerId)) {
+			beerRepository.deleteById(beerId);
+			return true;
+		}
+		
+		return false;
 	}
 
 }
