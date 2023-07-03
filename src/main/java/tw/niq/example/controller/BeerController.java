@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import tw.niq.example.exception.NotFoundException;
@@ -53,7 +54,7 @@ public class BeerController {
 	}
 	
 	@PostMapping(BEER_PATH)
-	public ResponseEntity<Void> createBeer(@RequestBody BeerDto beer) {
+	public ResponseEntity<Void> createBeer(@Valid @RequestBody BeerDto beer) {
 		
 		BeerDto beerCreated = beerService.createBeer(beer);
 		
@@ -65,7 +66,7 @@ public class BeerController {
 	}
 	
 	@PutMapping(BEER_PATH_ID)
-	public ResponseEntity<Void> updateBeerById(@PathVariable("beerId") UUID beerId, @RequestBody BeerDto beer) {
+	public ResponseEntity<Void> updateBeerById(@PathVariable("beerId") UUID beerId, @Valid @RequestBody BeerDto beer) {
 		
 		if (beerService.updateBeerById(beerId, beer).isEmpty()) {
 			throw new NotFoundException();

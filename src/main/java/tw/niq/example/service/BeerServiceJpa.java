@@ -99,6 +99,11 @@ public class BeerServiceJpa implements BeerService {
 				foundBeer.setQuantityOnHand(beer.getQuantityOnHand());
 			}
 			
+			atomicReference.set(
+					Optional.of(
+							beerMapper.beerToBeerDto(
+									beerRepository.saveAndFlush(foundBeer))));
+			
 		}, () -> {
 			atomicReference.set(Optional.empty());
 		});

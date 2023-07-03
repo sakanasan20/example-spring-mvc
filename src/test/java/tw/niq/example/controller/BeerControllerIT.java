@@ -2,7 +2,11 @@ package tw.niq.example.controller;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.UUID;
 
@@ -11,12 +15,19 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.server.PathContainer;
 import org.springframework.test.annotation.Rollback;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.util.pattern.PathPattern.PathMatchInfo;
 import org.springframework.web.util.pattern.PathPatternParser;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import tw.niq.example.entity.Beer;
 import tw.niq.example.exception.NotFoundException;
@@ -35,9 +46,18 @@ class BeerControllerIT {
 	
 	@Autowired
 	BeerMapper beerMapper;
+	
+	@Autowired
+	ObjectMapper objectMapper;
+	
+	@Autowired
+	WebApplicationContext webApplicationContext;
+	
+	MockMvc mockMvc;
 
 	@BeforeEach
 	void setUp() throws Exception {
+		mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
 	}
 
 	@Test
@@ -163,6 +183,34 @@ class BeerControllerIT {
 		Beer beerPatched = beerRepository.findById(beer.getId()).get();
 		
 		assertThat(beerPatched.getBeerName()).isEqualTo(beerName);
+	}
+	
+	@Rollback
+	@Transactional
+	@Test
+	void testPatchBeerById_withBadBeerName() throws Exception {
+		
+		Beer beer = beerRepository.findAll().get(0);
+		
+		BeerDto beerDto = beerMapper.beerToBeerDto(beer);
+		
+		beerDto.setId(null);
+		beerDto.setVersion(null);
+		beerDto.setCreatedDate(null);
+		beerDto.setUpdateDate(null);
+		final String beerName = "012345678901234567890123456789012345678901234567890";
+		beerDto.setBeerName(beerName);
+		
+		String beerDtoJson = objectMapper.writeValueAsString(beerDto);
+
+		MvcResult mvcResult = mockMvc.perform(patch(BeerController.BEER_PATH_ID, beer.getId())
+				.contentType(MediaType.APPLICATION_JSON)
+				.accept(new MediaType("application", "json", StandardCharsets.UTF_8))
+				.content(beerDtoJson))
+			.andExpect(status().isBadRequest())
+			.andReturn();
+		
+		System.out.println(mvcResult.getResponse().getContentAsString());
 	}
 
 	@Rollback

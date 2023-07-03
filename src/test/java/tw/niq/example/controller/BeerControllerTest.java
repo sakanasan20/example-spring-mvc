@@ -31,6 +31,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -124,6 +125,26 @@ class BeerControllerTest {
 	}
 	
 	@Test
+	void testCreateBeer_whenBeerIsNotValid_returnBadRequest() throws Exception {
+		
+		BeerDto beerDto = BeerDto.builder().build();
+		
+		String beerDtoJson = objectMapper.writeValueAsString(beerDto);
+		
+		given(beerService.createBeer(any(BeerDto.class))).willReturn(beerServiceimpl.listBeers().stream().findFirst().get());
+		
+		MvcResult mvcResult = mockMvc.perform(post(BeerController.BEER_PATH)
+				.accept(MediaType.APPLICATION_JSON)
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(beerDtoJson))
+			.andExpect(status().isBadRequest())
+			.andExpect(jsonPath("$.length()", is(6)))
+			.andReturn();
+		
+		System.out.println(mvcResult.getResponse().getContentAsString());
+	}
+	
+	@Test
 	void testUpdateBeerById() throws Exception {
 	
 		BeerDto testBeer = beerServiceimpl.listBeers().stream().findFirst().get();
@@ -139,6 +160,28 @@ class BeerControllerTest {
 			.andExpect(status().isNoContent());
 		
 		verify(beerService).updateBeerById(any(UUID.class), any(BeerDto.class));
+	}
+	
+	@Test
+	void testUpdateBeerById_whenBeerIsNotValid_returnBadRequest() throws Exception {
+	
+		BeerDto testBeer = beerServiceimpl.listBeers().stream().findFirst().get();
+		
+		testBeer.setBeerName("012345678901234567890123456789012345678901234567890123456789");
+		
+		String testBeerJson = objectMapper.writeValueAsString(testBeer);
+		
+		given(beerService.updateBeerById(any(UUID.class), any(BeerDto.class))).willReturn(Optional.of(testBeer));
+
+		MvcResult mvcResult = mockMvc.perform(put(BeerController.BEER_PATH_ID, testBeer.getId())
+				.accept(MediaType.APPLICATION_JSON)
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(testBeerJson))
+			.andExpect(status().isBadRequest())
+			.andExpect(jsonPath("$.length()", is(1)))
+			.andReturn();
+		
+		System.out.println("testUpdateBeerById_whenBeerIsNotValid_returnBadRequest:" + mvcResult.getResponse().getContentAsString());
 	}
 	
 	@Test
