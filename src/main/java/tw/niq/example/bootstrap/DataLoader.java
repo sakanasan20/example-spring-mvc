@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
 import tw.niq.example.entity.Beer;
@@ -19,6 +20,7 @@ public class DataLoader implements CommandLineRunner {
 	private final BeerRepository beerRepository;
 	private final CustomerRepository customerRepository;
 
+//	@Transactional
 	@Override
 	public void run(String... args) throws Exception {
 		loadBeers();
