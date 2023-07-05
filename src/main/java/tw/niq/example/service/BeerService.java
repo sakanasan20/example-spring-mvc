@@ -5,10 +5,11 @@ import java.util.Optional;
 import java.util.UUID;
 
 import tw.niq.example.model.BeerDto;
+import tw.niq.example.model.BeerStyle;
 
 public interface BeerService {
 	
-	Collection<BeerDto> listBeers();
+	Collection<BeerDto> listBeers(String beerName, BeerStyle beerStyle, Boolean showInventory);
 
 	Optional<BeerDto> getBeerById(UUID beerId);
 

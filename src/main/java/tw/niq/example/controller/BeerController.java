@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.validation.Valid;
@@ -20,6 +21,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import tw.niq.example.exception.NotFoundException;
 import tw.niq.example.model.BeerDto;
+import tw.niq.example.model.BeerStyle;
 import tw.niq.example.service.BeerService;
 
 @Slf4j
@@ -34,9 +36,12 @@ public class BeerController {
 	private final BeerService beerService;
 
 	@GetMapping(BEER_PATH)
-	public Collection<BeerDto> listBeers() {
+	public Collection<BeerDto> listBeers(
+			@RequestParam(value = "beerName", required = false) String beerName, 
+			@RequestParam(value = "beerStyle", required = false) BeerStyle beerStyle, 
+			@RequestParam(value = "showInventory", required = false) Boolean showInventory) {
 		
-		Collection<BeerDto> beers = beerService.listBeers();
+		Collection<BeerDto> beers = beerService.listBeers(beerName, beerStyle, showInventory);
 		
 		log.debug(beers.toString());
 		

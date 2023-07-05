@@ -11,8 +11,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import lombok.RequiredArgsConstructor;
+import tw.niq.example.entity.Beer;
 import tw.niq.example.mapper.BeerMapper;
 import tw.niq.example.model.BeerDto;
+import tw.niq.example.model.BeerStyle;
 import tw.niq.example.repository.BeerRepository;
 
 @Service
@@ -24,11 +26,37 @@ public class BeerServiceJpa implements BeerService {
 	private final BeerMapper beerMapper;
 	
 	@Override
-	public Collection<BeerDto> listBeers() {
-		return beerRepository.findAll()
-				.stream()
-				.map(beerMapper::beerToBeerDto)
-				.collect(Collectors.toList());
+	public Collection<BeerDto> listBeers(String beerName, BeerStyle beerStyle, Boolean showInventory) {
+		
+		Collection<Beer> beers;
+		
+		if (StringUtils.hasText(beerName) && beerStyle == null) {
+			beers = listBeersByName(beerName);
+		} else if (!StringUtils.hasText(beerName) && beerStyle != null) {
+			beers = listBeersByStyle(beerStyle);
+		} else if (StringUtils.hasText(beerName) && beerStyle != null) {
+			beers = listBeersByNameAndStyle(beerName, beerStyle);
+		} else {
+			beers = beerRepository.findAll();
+		}
+		
+		if (showInventory != null && !showInventory) {
+			beers.forEach(beer -> beer.setQuantityOnHand(null));
+		}
+		
+		return beers.stream().map(beerMapper::beerToBeerDto).collect(Collectors.toList());
+	}
+	
+	Collection<Beer> listBeersByName(String beerName) {
+		return beerRepository.findAllByBeerNameIsLikeIgnoreCase("%" + beerName + "%");
+	}
+	
+	Collection<Beer> listBeersByStyle(BeerStyle beerStyle) {
+		return beerRepository.findAllByBeerStyle(beerStyle);
+	}
+	
+	Collection<Beer> listBeersByNameAndStyle(String beerName, BeerStyle beerStyle) {
+		return beerRepository.findAllByBeerNameIsLikeIgnoreCaseAndBeerStyle("%" + beerName + "%", beerStyle);
 	}
 
 	@Override
