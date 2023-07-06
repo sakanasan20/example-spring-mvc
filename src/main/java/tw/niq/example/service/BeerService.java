@@ -1,15 +1,16 @@
 package tw.niq.example.service;
 
-import java.util.Collection;
 import java.util.Optional;
 import java.util.UUID;
+
+import org.springframework.data.domain.Page;
 
 import tw.niq.example.model.BeerDto;
 import tw.niq.example.model.BeerStyle;
 
 public interface BeerService {
 	
-	Collection<BeerDto> listBeers(String beerName, BeerStyle beerStyle, Boolean showInventory);
+	Page<BeerDto> listBeers(String beerName, BeerStyle beerStyle, Boolean showInventory, Integer pageNumber, Integer pageSize);
 
 	Optional<BeerDto> getBeerById(UUID beerId);
 

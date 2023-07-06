@@ -3,12 +3,13 @@ package tw.niq.example.service;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -66,8 +67,8 @@ public class BeerServiceMap implements BeerService {
 	}
 
 	@Override
-	public Collection<BeerDto> listBeers(String beerName, BeerStyle beerStyle, Boolean showInventory) {
-		return new ArrayList<>(beerMap.values());
+	public Page<BeerDto> listBeers(String beerName, BeerStyle beerStyle, Boolean showInventory, Integer pageNumber, Integer pageSize) {
+		return new PageImpl<>(new ArrayList<>(beerMap.values()));
 	}
 	
 	@Override

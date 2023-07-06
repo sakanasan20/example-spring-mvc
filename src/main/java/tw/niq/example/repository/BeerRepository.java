@@ -1,8 +1,9 @@
 package tw.niq.example.repository;
 
-import java.util.Collection;
 import java.util.UUID;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -12,10 +13,10 @@ import tw.niq.example.model.BeerStyle;
 @Repository
 public interface BeerRepository extends JpaRepository<Beer, UUID> {
 
-	Collection<Beer> findAllByBeerNameIsLikeIgnoreCase(String beerName);
+	Page<Beer> findAllByBeerNameIsLikeIgnoreCase(String beerName, Pageable pageable);
 	
-	Collection<Beer> findAllByBeerStyle(BeerStyle beerStyle);
+	Page<Beer> findAllByBeerStyle(BeerStyle beerStyle, Pageable pageable);
 	
-	Collection<Beer> findAllByBeerNameIsLikeIgnoreCaseAndBeerStyle(String beerName, BeerStyle beerStyle);
+	Page<Beer> findAllByBeerNameIsLikeIgnoreCaseAndBeerStyle(String beerName, BeerStyle beerStyle, Pageable pageable);
 	
 }

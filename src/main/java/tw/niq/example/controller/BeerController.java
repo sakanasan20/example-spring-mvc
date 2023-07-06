@@ -1,8 +1,8 @@
 package tw.niq.example.controller;
 
-import java.util.Collection;
 import java.util.UUID;
 
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -36,12 +36,14 @@ public class BeerController {
 	private final BeerService beerService;
 
 	@GetMapping(BEER_PATH)
-	public Collection<BeerDto> listBeers(
+	public Page<BeerDto> listBeers(
 			@RequestParam(value = "beerName", required = false) String beerName, 
 			@RequestParam(value = "beerStyle", required = false) BeerStyle beerStyle, 
-			@RequestParam(value = "showInventory", required = false) Boolean showInventory) {
+			@RequestParam(value = "showInventory", required = false) Boolean showInventory, 
+			@RequestParam(value = "pageNumber", required = false) Integer pageNumber, 
+			@RequestParam(value = "pageSize", required = false) Integer pageSize) {
 		
-		Collection<BeerDto> beers = beerService.listBeers(beerName, beerStyle, showInventory);
+		Page<BeerDto> beers = beerService.listBeers(beerName, beerStyle, showInventory, pageNumber, pageSize);
 		
 		log.debug(beers.toString());
 		
