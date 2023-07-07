@@ -1,8 +1,6 @@
 package tw.niq.example.entity;
 
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.UUID;
 
 import org.hibernate.annotations.CreationTimestamp;
@@ -15,7 +13,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Version;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -29,8 +27,8 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-public class Customer {
-	
+public class BeerOrderShipment {
+
 	@Id
 	@GeneratedValue(generator = "UUID")
 	@GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
@@ -39,21 +37,18 @@ public class Customer {
 	private UUID id;
 	
 	@Version
-	private Integer version;
-
+	private Long version;
+	
 	@CreationTimestamp
+	@Column(updatable = false)
 	private LocalDateTime createdDate;
 	
 	@UpdateTimestamp
-	private LocalDateTime updateDate;
+	private LocalDateTime lastModifiedDate;
 	
-	private String name;
+	@OneToOne
+	private BeerOrder beerOrder;
 	
-	@Column(length = 255)
-	private String email;
-	
-	@Builder.Default
-	@OneToMany(mappedBy = "customer")
-	private Set<BeerOrder> beerOrders = new HashSet<>();
+	private String trackingNumber;
 	
 }

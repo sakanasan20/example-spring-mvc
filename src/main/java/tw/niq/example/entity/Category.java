@@ -1,7 +1,7 @@
 package tw.niq.example.entity;
 
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.sql.Timestamp;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
@@ -18,17 +18,12 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.Version;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import tw.niq.example.model.BeerStyle;
 
 @Getter
 @Setter
@@ -36,7 +31,7 @@ import tw.niq.example.model.BeerStyle;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-public class Beer {
+public class Category {
 	
 	@Id
 	@GeneratedValue(generator = "UUID")
@@ -46,50 +41,22 @@ public class Beer {
 	private UUID id;
 	
 	@Version
-	private Integer version;
+	private Long version;
 	
 	@CreationTimestamp
-	private LocalDateTime createdDate;
+	@Column(updatable = false)
+	private Timestamp createdDate;
 	
 	@UpdateTimestamp
-	private LocalDateTime updateDate;
+	private Timestamp lastModifiedDate;
 	
-	@NotBlank
-	@NotNull
-	@Size(max = 50)
-	@Column(length = 50)
-	private String beerName;
+	private String description;
 	
-	@NotNull
-	private BeerStyle beerStyle;
-	
-	@NotBlank
-	@NotNull
-	@Size(max = 255)
-	private String upc;
-	
-	private Integer quantityOnHand;
-	
-	@NotNull
-	private BigDecimal price;
-	
-	@OneToMany(mappedBy = "beer")
-	private Set<BeerOrderLine> beerOrderLines;
-	
+	@Builder.Default
 	@ManyToMany
-	@JoinTable(name = "beer_category",
-		joinColumns = @JoinColumn(name = "beer_id"), 
-		inverseJoinColumns = @JoinColumn(name = "category_id"))
-	private Set<Category> categories;
-	
-	public void addCategory(Category category) {
-		this.categories.add(category);
-		category.getBeers().add(this);
-	}
-	
-	public void removeCategory(Category category) {
-		this.categories.remove(category);
-		category.getBeers().remove(this);
-	}
+	@JoinTable(name = "beer_category", 
+		joinColumns = @JoinColumn(name = "category_id"), 
+		inverseJoinColumns = @JoinColumn(name = "beer_id"))
+	private Set<Beer> beers = new HashSet<>();
 
 }
