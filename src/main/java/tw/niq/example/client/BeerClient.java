@@ -16,4 +16,10 @@ public interface BeerClient {
 
 	BeerDto getBeerById(UUID beerId);
 
+	BeerDto createBeer(BeerDto beer);
+
+	BeerDto updateBeer(BeerDto beer);
+
+	void deleteBeer(UUID beerId);
+
 }

@@ -1,5 +1,6 @@
 package tw.niq.example.client;
 
+import java.net.URI;
 import java.util.UUID;
 
 import org.springframework.boot.web.client.RestTemplateBuilder;
@@ -52,6 +53,34 @@ public class BeerClientImpl implements BeerClient {
 		RestTemplate restTemplate = restTemplateBuilder.build();
 		
 		return restTemplate.getForObject(GET_BEER_BY_ID_PATH, BeerDto.class, beerId);
+	}
+
+	@Override
+	public BeerDto createBeer(BeerDto beer) {
+		
+		RestTemplate restTemplate = restTemplateBuilder.build();
+
+		URI uri = restTemplate.postForLocation(GET_BEER_PATH, beer);
+		
+		return restTemplate.getForObject(uri.getPath(), BeerDto.class);
+	}
+
+	@Override
+	public BeerDto updateBeer(BeerDto beer) {
+		
+		RestTemplate restTemplate = restTemplateBuilder.build();
+		
+		restTemplate.put(GET_BEER_BY_ID_PATH, beer, beer.getId());
+		
+		return getBeerById(beer.getId());
+	}
+
+	@Override
+	public void deleteBeer(UUID beerId) {
+		
+		RestTemplate restTemplate = restTemplateBuilder.build();
+		
+		restTemplate.delete(GET_BEER_BY_ID_PATH, beerId);
 	}
 
 }
