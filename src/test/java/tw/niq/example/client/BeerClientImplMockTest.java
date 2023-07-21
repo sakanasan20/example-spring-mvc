@@ -3,6 +3,7 @@ package tw.niq.example.client;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.header;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.method;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.queryParam;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
@@ -66,6 +67,7 @@ class BeerClientImplMockTest {
 	
 	String beerDtoJson;
 	
+	@SuppressWarnings("static-access")
 	@BeforeEach
 	void setUp() throws Exception {
 		
@@ -111,8 +113,8 @@ class BeerClientImplMockTest {
 		mockRestServiceServer.expect(method(HttpMethod.GET))
 			.andExpect(requestTo(uri))
 			.andExpect(queryParam("beerName", "ALE"))
+			.andExpect(header("Authorization", "Basic YWRtaW46YWRtaW5wYXNz"))
 			.andRespond(withSuccess(beerDtosPageJson, MediaType.APPLICATION_JSON));
-		
 		Page<BeerDto> beersPage = beerClient.listBeers("ALE", null, null, null, null);
 		
 		assertThat(beersPage.getContent().size()).isEqualTo(1);
